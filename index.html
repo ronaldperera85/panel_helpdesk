@@ -23,16 +23,11 @@
             color: #ffffff;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             
-            /* --- FIX PARA TV --- */
-            /* Esto reduce todo al 80% para que quepa en pantallas con escala */
-            zoom: 0.8; 
-            /* Quitamos el scrollbar feo de la derecha si sobra un pixel */
-            overflow: hidden; 
-            height: 100vh;
+            /* --- AJUSTE TV: Zoom out para que quepa todo --- */
+            zoom: 0.85; /* Ajusta este número si sigue muy grande (0.8) o muy chico (0.9) */
+            height: 100vh; /* Ocupar toda la altura */
+            overflow: hidden; /* Evitar scrollbars */
         }
-
-        /* Hacemos la fuente un poquito más compacta */
-        .big-number { font-size: 3rem; }
 
         .text-glow {
             color: #ffffff !important;
@@ -65,7 +60,7 @@
         }
 
         .big-number {
-            font-size: 3.5rem;
+            font-size: 3rem; /* Reducido un poco para TV */
             font-weight: 700;
             line-height: 1;
             margin-bottom: 5px;
@@ -78,35 +73,31 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            /* Aquí está la magia: Grid de 2 columnas */
             display: grid;
             grid-template-columns: 1fr 1fr; 
-            gap: 15px; /* Espacio entre columnas y filas */
-            
-            /* Altura fija y sin scroll */
-            height: 480px; 
+            gap: 15px; 
+            height: 420px; /* Ajuste de altura para TV */
             overflow: hidden; 
-            align-content: start; /* Evita que se estiren si hay pocos */
+            align-content: start;
         }
 
         .agent-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 15px; /* Un poco menos de padding para que quepan más */
-            border: 1px solid rgba(255,255,255,0.08); /* Borde completo a cada tarjeta */
-            background-color: rgba(255,255,255,0.02); /* Fondo sutil */
-            border-radius: 8px; /* Bordes redondeados */
+            padding: 12px 15px;
+            border: 1px solid rgba(255,255,255,0.08); 
+            background-color: rgba(255,255,255,0.02); 
+            border-radius: 8px; 
         }
 
-        /* Estilo para el indicador de "..." al final */
         .more-items-indicator {
-            grid-column: span 2; /* Ocupa las 2 columnas */
+            grid-column: span 2; 
             text-align: center;
             background-color: var(--color-atencion);
             color: #000;
             font-weight: 800;
-            padding: 10px;
+            padding: 8px;
             border-radius: 8px;
             animation: pulse 2s infinite;
         }
@@ -117,22 +108,16 @@
             100% { opacity: 1; }
         }
 
-        /* Ajuste responsivo: En celulares volver a 1 columna */
-        @media (max-width: 992px) {
-            .agent-list { grid-template-columns: 1fr; }
-            .more-items-indicator { grid-column: span 1; }
-        }
-
         .agent-name {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #ffffff;
         }
 
         .agent-status {
-            font-size: 0.9rem;
-            color: #e2e8f0 !important; /* <--- CAMBIO: Gris claro casi blanco */
-            font-weight: 500;          /* <--- CAMBIO: Un poco más grueso */
+            font-size: 0.85rem;
+            color: #e2e8f0 !important;
+            font-weight: 500;
             opacity: 0.9;
         }
 
@@ -161,7 +146,7 @@
         .badge-custom {
             font-weight: 800;
             letter-spacing: 0.5px;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
@@ -173,8 +158,9 @@
 </head>
 <body>
 
-<div class="container-fluid p-2">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<!-- Padding reducido a p-3 -->
+<div class="container-fluid p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="m-0 text-white"><i class="fas fa-chart-pie me-2"></i>ICAROSoft, C.A. / Helpdesk</h3>
         <div class="text-end">
             <div id="reloj" class="h4 m-0 text-white fw-bold">00:00:00</div>
@@ -184,52 +170,44 @@
 
     <!-- FILA 1: KPIs -->
     <div class="row mb-3">
-        <!-- Asignados (YA TENÍA ÍCONO) -->
         <div class="col-md-3">
             <div class="card card-custom p-3 h-100">
                 <div class="card-title">Asignados</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="big-number" id="kpi-asignados">--</div>
-                    <!-- Ícono: Headset -->
                     <i class="fas fa-headset fa-2x text-white-50 mb-2"></i>
                 </div>
                 <small class="text-reciente fw-bold">Chats activos ahora</small>
             </div>
         </div>
         
-        <!-- Abiertos (NUEVO ÍCONO AGREGADO) -->
         <div class="col-md-3">
             <div class="card card-custom p-3 h-100">
                 <div class="card-title">Total Abiertos</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="big-number" id="kpi-abiertos">--</div>
-                    <!-- Ícono: Carpeta Abierta -->
                     <i class="fas fa-folder-open fa-2x text-white-50 mb-2"></i>
                 </div>
                 <small class="text-white-50">Acumulado del día</small>
             </div>
         </div>
 
-        <!-- Espera Cliente (NUEVO ÍCONO AGREGADO) -->
         <div class="col-md-3">
             <div class="card card-custom p-3 h-100">
                 <div class="card-title">Esperando Cliente</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="big-number" id="kpi-espera">--</div>
-                    <!-- Ícono: Usuario esperando -->
                     <i class="fas fa-user-clock fa-2x text-white-50 mb-2"></i>
                 </div>
                 <small class="text-atencion fw-bold" style="filter: brightness(1.2);">Requiere respuesta</small>
             </div>
         </div>
 
-        <!-- Críticos (NUEVO ÍCONO AGREGADO) -->
         <div class="col-md-3">
             <div class="card card-custom p-3 h-100" style="border-bottom: 4px solid var(--color-excedido);">
                 <div class="card-title text-white">Retraso Crítico (>2h)</div>
                 <div class="d-flex justify-content-between align-items-end">
                     <div class="big-number" id="kpi-criticos">--</div>
-                    <!-- Ícono: Alerta triangular -->
                     <i class="fas fa-triangle-exclamation fa-2x text-white-50 mb-2"></i>
                 </div>
                 <small class="text-excedido fw-bold">Atención Inmediata</small>
@@ -237,11 +215,17 @@
         </div>
     </div>
 
+    <!-- FILA 2 -->
     <div class="row">
+        <!-- 
+             IMPORTANTE PARA TV:
+             Usamos col-8 y col-4 (sin 'lg') para forzar la estructura
+             y que nunca se ponga una debajo de la otra.
+        -->
         <div class="col-8 mb-3">
-            <div class="card card-custom p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary">
-                    <h5 class="m-0 text-white fw-bold">Estado de Tickets en Tiempo Real</h5>
+            <div class="card card-custom p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
+                    <h5 class="m-0 text-white fw-bold">Estado de Tickets</h5>
                     <div class="d-none d-xl-block" style="font-size: 0.75rem;">
                         <span class="me-3 text-reciente"><i class="fas fa-circle"></i> <10m</span>
                         <span class="me-3 text-atencion"><i class="fas fa-circle"></i> 10-20m</span>
@@ -259,10 +243,13 @@
         </div>
 
         <div class="col-4 mb-3">
-            <div class="card card-custom p-4 h-100">
-                <h5 class="mb-4 text-white fw-bold">Métricas de Retraso</h5>
+            <!-- AGREGADO: d-flex flex-column justify-content-center -->
+            <!-- Esto centra todo el bloque verticalmente para aprovechar el espacio -->
+            <div class="card card-custom p-3 h-100 d-flex flex-column justify-content-center">
                 
-                <div class="mb-4">
+                <h5 class="mb-3 text-white fw-bold">Métricas de Retraso</h5>
+                
+                <div class="mb-3">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-glow">> 120 min</span>
                         <span id="bar-val-120" class="metric-value">0</span>
@@ -272,7 +259,7 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-glow">60 - 120 min</span>
                         <span id="bar-val-60" class="metric-value">0</span>
@@ -282,7 +269,7 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-glow">30 - 40 min</span>
                         <span id="bar-val-30" class="metric-value">0</span>
@@ -292,7 +279,7 @@
                     </div>
                 </div>
 
-                 <div class="mb-4">
+                 <div class="mb-3">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-glow">< 10 min</span>
                         <span id="bar-val-10" class="metric-value">0</span>
@@ -302,7 +289,8 @@
                     </div>
                 </div>
 
-                <div class="mt-auto pt-4 border-top border-secondary text-center">
+                <!-- CAMBIO AQUI: Se cambió 'mt-auto' por 'mt-3' -->
+                <div class="mt-3 pt-3 border-top border-secondary text-center">
                     <small class="text-white-50 d-block mb-1">Sucursal Conectada</small>
                     <h2 id="info-sucursal" class="text-white fw-bold mb-2">...</h2>
                     <div class="badge bg-success bg-opacity-25 text-success border border-success px-3">ONLINE</div>
@@ -313,17 +301,7 @@
 </div>
 
 <script>
-    // ==========================================
-    // NUEVA CONFIGURACIÓN (LOCAL)
-    // ==========================================
-    
-    // Ahora apuntamos a nuestro archivo PHP local, no a la URL externa
-    // Agregamos un timestamp para evitar que el navegador guarde caché
     const getLocalApiUrl = () => `data.php?_t=${Date.now()}`;
-
-    // ==========================================
-    // LÓGICA
-    // ==========================================
 
     function getStyles(categoryKey) {
         switch(categoryKey) {
@@ -344,28 +322,18 @@
 
     async function fetchData() {
         const statusLabel = document.getElementById('last-update');
-        
         try {
             statusLabel.innerHTML = '<span class="text-warning">Sincronizando...</span>';
-
-            // Petición al archivo PHP local
             const response = await fetch(getLocalApiUrl());
-            
             if (!response.ok) throw new Error(`Error Servidor: ${response.status}`);
-
             const data = await response.json();
-
-            // Verificamos si el PHP devolvió un error interno
-            if(data.error) {
-                throw new Error(data.message || 'Error en la API remota');
-            }
+            if(data.error) throw new Error(data.message || 'Error API');
 
             renderDashboard(data);
             
             statusLabel.innerHTML = '<span class="text-success fw-bold">Actualizado: ' + new Date().toLocaleTimeString() + '</span>';
-
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error:', error);
             statusLabel.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
         }
     }
@@ -375,7 +343,6 @@
 
         const resumen = data.resumen_general;
 
-        // --- KPIs ---
         document.getElementById('kpi-asignados').innerText = resumen.chat_asignados || 0;
         document.getElementById('kpi-abiertos').innerText = resumen.chat_abiertos || 0;
         document.getElementById('kpi-espera').innerText = resumen.chat_en_espera_del_cliente || 0;
@@ -385,7 +352,6 @@
             document.getElementById('info-sucursal').innerText = resumen.info_consulta.sucursal.toUpperCase();
         }
 
-        // --- Barras ---
         const MAX_SCALE = 20; 
         const updateBar = (id, val) => {
             document.getElementById(`bar-val-${id}`).innerText = val;
@@ -399,42 +365,33 @@
         updateBar('30', resumen.chat_tiempo_espera_30min || 0);
         updateBar('10', resumen.chat_tiempo_espera_menos_10min || 0);
 
-        // --- LISTA CENTRAL (LÓGICA NUEVA) ---
         const listContainer = document.getElementById('ticket-list');
         let htmlContent = '';
         const detalles = data.detalle_por_tiempo_espera;
 
-        // CONFIGURACIÓN DE LÍMITE
-        // Define aquí cuántos tickets caben en tu pantalla TV. 
-        // 10 u 12 suele ser un buen número para 2 columnas.
         const MAX_ITEMS_ON_SCREEN = 10; 
         let currentCount = 0;
         let limitReached = false;
 
-        // Recorremos los datos
         for (const [key, tickets] of Object.entries(detalles)) {
             if(key === 'en_espera_del_cliente') continue; 
-            if(limitReached) break; // Si ya llenamos la pantalla, paramos de buscar
+            if(limitReached) break;
 
             const styles = getStyles(key);
             const label = formatLabel(key);
 
             if (Array.isArray(tickets) && tickets.length > 0) {
                 for (const ticket of tickets) {
-                    
-                    // Si llegamos al límite, activamos la bandera y paramos
                     if (currentCount >= MAX_ITEMS_ON_SCREEN) {
                         limitReached = true;
                         break;
                     }
-
-                    // Renderizamos el item
                     htmlContent += `
                         <li class="agent-item">
                             <div class="d-flex align-items-center">
                                 <span class="status-dot ${styles.color}"></span>
                                 <div>
-                                    <div class="agent-name text-truncate" style="max-width: 160px;">
+                                    <div class="agent-name text-truncate" style="max-width: 150px;">
                                         ${ticket.nombre_cliente || 'Desconocido'}
                                     </div>
                                     <div class="agent-status small">
@@ -454,16 +411,14 @@
             }
         }
         
-        // Si sobraron tickets que no cupieron, agregamos el indicador "..."
         if (limitReached) {
             htmlContent += `
                 <li class="more-items-indicator">
-                    <i class="fas fa-ellipsis-h me-2"></i> HAY MÁS TICKETS EN COLA
+                    <i class="fas fa-ellipsis-h me-2"></i> HAY MÁS EN COLA
                 </li>
             `;
         }
 
-        // Si estaba vacío
         if(htmlContent === '' && !limitReached) {
             htmlContent = `
                 <li class="text-center p-5 text-muted" style="grid-column: span 2;">
@@ -481,7 +436,6 @@
 
     fetchData(); 
     setInterval(fetchData, 5000); 
-
 </script>
 </body>
 </html>
