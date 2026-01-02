@@ -1,23 +1,15 @@
 <?php
 // data.php
-$envPath = __DIR__ . '/.env';
-$token = $empresa = $sucursal = null;
+$token = getenv('token');
+$empresa = getenv('empresa');
+$sucursal = getenv('sucursal');
 
-if (file_exists($envPath)) {
-    $env = file_get_contents($envPath);
-    // Eliminar comentarios con // y líneas vacías
-    $env = preg_replace('/^\s*\/\/.*$/m', '', $env);
-    // Buscar patrones key = "value" (con o sin comillas y con o sin ;)
-    if (preg_match('/token\s*=\s*(["\']?)(.*?)\1\s*;?/i', $env, $m)) $token = trim($m[2]);
-    if (preg_match('/empresa\s*=\s*(["\']?)(.*?)\1\s*;?/i', $env, $m)) $empresa = trim($m[2]);
-    if (preg_match('/sucursal\s*=\s*(["\']?)(.*?)\1\s*;?/i', $env, $m)) $sucursal = trim($m[2]);
-}
-
+// Validación: Si alguna está vacía, devolvemos error.
 if (!$token || !$empresa || !$sucursal) {
     header('Content-Type: application/json');
     echo json_encode([
         "error" => true,
-        "message" => "Faltan variables de configuración en .env"
+        "message" => "Faltan variables de entorno. Configúralas en CapRover (App Configs)."
     ]);
     exit;
 }
@@ -25,14 +17,14 @@ if (!$token || !$empresa || !$sucursal) {
 // Construimos la URL
 $url = "https://api.icarosoft.com/helpdesk-status/?token={$token}&empresa={$empresa}&sucursal={$sucursal}";
 
-// 2. INICIALIZAR CURL (Para hacer la petición como si fuera un navegador)
+// 2. INICIALIZAR CURL
 $ch = curl_init();
 
 // Opciones de configuración
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 15); // Esperar máximo 15 segundos
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Evitar problemas de SSL en servidores locales
+curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
 
 // Ejecutar la petición
 $response = curl_exec($ch);
@@ -41,15 +33,12 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 // Cerrar conexión
 curl_close($ch);
 
-// 3. DEVOLVER LA RESPUESTA AL DASHBOARD
-// Le decimos al navegador que esto es JSON
+// 3. DEVOLVER LA RESPUESTA
 header('Content-Type: application/json');
 
-// Si Icarosoft respondió bien (código 200), pasamos los datos
 if ($httpCode === 200 && $response) {
     echo $response;
 } else {
-    // Si falló, devolvemos un error controlado
     echo json_encode([
         "error" => true,
         "message" => "Error al conectar con API externa",
