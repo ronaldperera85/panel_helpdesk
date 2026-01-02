@@ -1,0 +1,7 @@
+temp_files
+.DS_Store
+*.log
+*.env
+.git
+.gitignore
+docker-compose.yml
