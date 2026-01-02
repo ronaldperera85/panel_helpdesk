@@ -1,5 +1,5 @@
 <?php
-// ...existing code...
+// data.php
 $envPath = __DIR__ . '/.env';
 $token = $empresa = $sucursal = null;
 
